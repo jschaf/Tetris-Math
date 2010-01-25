@@ -22,7 +22,7 @@ class Equation(object):
         self.eqn_repr = eqn_represenations[self.eqn_function]
 
         # Should limit leftSide and rightSide to reasonable values for
-        # different operators.
+        # different operators.  Also make sure division is even.
         self.left_side = randint(0, 10)
         self.right_side = randint(0, 10)
         self.answer = self.eqn_function(self.left_side, self.right_side)
