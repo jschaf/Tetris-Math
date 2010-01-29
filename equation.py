@@ -6,6 +6,8 @@ from operator import add, sub, mul, floordiv
 
 class Equation(object):
     '''Represent an equation.
+
+    TODO:  Fine grained difficulty for negative numbers.
     '''
 
     def __init__(self, difficulty):
@@ -30,7 +32,7 @@ class Equation(object):
     def render(self, with_answer=False):
         '''Return a string representation of the equation.'''
         render_string = '{0} {1} {2}'.format(self.left_side, self.eqn_repr,
-                                            self.right_side)
+                                             self.right_side)
         if with_answer:
             render_string += ' = {0}'.format(self.answer)
         return render_string
