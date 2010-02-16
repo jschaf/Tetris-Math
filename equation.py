@@ -36,9 +36,3 @@ class Equation(object):
         if with_answer:
             render_string += ' = {0}'.format(self.answer)
         return render_string
-
-    def draw(self, with_answer=False):
-        '''Draw the rendering of the equation.'''
-        
-        print('Drawing: ' + self.render(with_answer))
-    

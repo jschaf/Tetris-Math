@@ -4,7 +4,12 @@ class TextView(object):
     '''A view primarily to aid in debugging.'''
 
     def __init__(self, board):
-        pass
+        self.equation = None
+
 
     def draw(self):
-        pass
+        print(equation.render())
+
+    def update_equation(self, equation):
+        self.equation = equation
+
