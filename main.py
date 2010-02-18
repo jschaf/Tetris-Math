@@ -15,13 +15,13 @@ def main():
     screen = pygame.display.set_mode(WINDOW_SIZE, 0, 8)
     pygame.display.set_caption('Tetris Math')
 
-    board_model = board.Board(*WINDOW_SIZE)
-    controller = GameController(board_model)
+    board_model = board.Board(640, 480, screen)
+    controller = gameController.GameController(board_model)
 
     running = True
 
     while running:
-        controller.update()
+        controller.update(board_model)
         controller.draw()
 
 if __name__ == '__main__':
