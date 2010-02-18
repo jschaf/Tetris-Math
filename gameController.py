@@ -1,5 +1,5 @@
 '''A controller class for the views.'''
-
+from pygame.locals import *
 import pygame
 
 import board
@@ -12,21 +12,18 @@ class GameController(object):
 
     def __init__(self, board):
         self.board = board
-        self.gui_view = guiView(board)
-        self.text_view = textView(board)
+        self.gui_view = guiView.GuiView(board)
+        self.text_view = textView.TextView(board)
 
-    def generate_equation():
+    def generate_equation(self):
         '''Create a new equation to pass to the models.'''
-        return Equation(0);
+        return equation.Equation(0);
     
 
-    def update(board):
+    def update(self, board):
         '''This function provides a loop and variables to keep
         displaying math problems.'''
-        new_equation = generate_equation()
-
-        gui_view.update_equation(new_equation)
-        text_view.update_equation(new_equation)
+        
 
         for event in pygame.event.get():
             if event.type is QUIT:
@@ -34,8 +31,12 @@ class GameController(object):
             if event.type == KEYUP:
                 print(event)
             if event.type is MOUSEBUTTONDOWN:
-                drawProblem(ttt, board)
-                problem_count += 1    
+                new_equation = self.generate_equation()
+
+                self.gui_view.update_equation(new_equation)
+                self.text_view.update_equation(new_equation)
+                
+                self.board.problem_count += 1 
 
 
         # if (a + b == ans):
@@ -48,5 +49,5 @@ class GameController(object):
 
     def draw(self):
         '''Draw every model.'''
-        gui_view.draw()
-        text_view.draw()
+        self.gui_view.draw()
+        self.text_view.draw()
