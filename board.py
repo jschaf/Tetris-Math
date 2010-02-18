@@ -33,8 +33,8 @@ class Board(object):
     def update(self):
         '''Update the board state.'''
         self.current_eqn_position += self.drop_speed
-        if ((self.height - self.dead_eqns * DEAD_EQN_HEIGHT)
-            >= current_eqn_position):
+        if ((self.height - self.dead_eqns * self.DEAD_EQN_HEIGHT)
+            >= self.current_eqn_position):
             self.dead_eqns += 1
             self.kill_current_eqn()
 
