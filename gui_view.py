@@ -23,7 +23,7 @@ class GuiView(object):
         self.changed_eqn = True
         
     def refresh(self):
-        self.changed_eqn = True
+        self.changed_eqn = False
         
     # draws the problem in the window and also puts it on the command line
     def draw(self):
