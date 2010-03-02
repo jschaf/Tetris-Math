@@ -5,7 +5,7 @@ import pygame
 from pygame.locals import *
 
 import board
-import gameController
+from game_controller import GameController
 
 def main():
     WINDOW_SIZE = (640,480)
@@ -14,7 +14,7 @@ def main():
     pygame.display.set_caption('Tetris Math')
 
     board_model = board.Board(640, 480, screen)
-    controller = gameController.GameController(board_model)
+    controller = GameController(board_model)
 
     controller.running = True
 
