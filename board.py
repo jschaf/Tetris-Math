@@ -1,18 +1,12 @@
 '''A game board for equations.
 '''
-
-
-# Tetris Math prototype
-
-# import necessary modules
-import random
 from equation import int_from_digits
 
 class Board(object):
     '''A board to hold the game state.  Equations start at the top
     (defined as 0) and progress down the screen at the rate defined by
     drop_speed.  When the equation hits the bottom or the stack of
-    dead equations a new dead equation is created.  When 
+    dead equations a new dead equation is created.  When
     '''
     DEAD_EQN_HEIGHT = 10
 
@@ -33,6 +27,7 @@ class Board(object):
         self.drop_speed += 1
 
     def has_correct_guess(self):
+        '''Return if the current_input matches the answer.'''
         guess = int_from_digits(self.current_input)
         return self.current_eqn.answer == guess
 
