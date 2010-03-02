@@ -20,6 +20,7 @@ class GameController(object):
         self.text_view.update_eqn(initial_eqn)
         self.number_keys = [K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]
         self.number_key_dict = dict(zip(self.number_keys, range(10)))      
+
     def generate_equation(self):
         '''Create a new equation to pass to the models.'''
         return Equation(0)
