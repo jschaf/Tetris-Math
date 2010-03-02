@@ -2,7 +2,6 @@
 from pygame.locals import *
 import pygame
 
-import board
 from equation import Equation
 import textView
 import guiView
@@ -23,7 +22,7 @@ class GameController(object):
         self.number_key_dict = dict(zip(self.number_keys, range(10)))      
     def generate_equation(self):
         '''Create a new equation to pass to the models.'''
-        return Equation(0);
+        return Equation(0)
     
     def _update_eqn(self):
         if self.board.has_correct_guess():
@@ -49,7 +48,8 @@ class GameController(object):
             
             if event.type == KEYDOWN:
                 if event.key in self.number_keys:
-                    self.board.current_input.append(self.number_key_dict[event.key])
+                    key_num = self.number_key_dict[event.key]
+                    self.board.current_input.append(key_num)
                     self.gui_view.refresh()
                 if event.key == K_RETURN:
                     #compare, display, feedback
@@ -62,15 +62,6 @@ class GameController(object):
                 self.text_view.update_eqn(new_equation)
                 
                 self.board.problem_count += 1 
-
-
-        # if (a + b == ans):
-        #     print "Correct!"
-        #     correctTally += 1
-        # else:
-        #     print "Incorrect: "+str(a)+" + "+str(b)+" = "+str(a+b)
-
-        # print "You answered " +str(selcorrect_tally)+"/"+str(problem_count)+ " correctly."
 
     def draw(self):
         '''Draw every model.'''
