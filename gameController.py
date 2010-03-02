@@ -3,7 +3,7 @@ from pygame.locals import *
 import pygame
 
 import board
-import equation
+from equation import Equation
 import textView
 import guiView
 
