@@ -1,7 +1,5 @@
 '''A view for the command line.'''
 
-import equation
-
 class TextView(object):
     '''A view primarily to aid in debugging.'''
 

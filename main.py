@@ -3,9 +3,7 @@
 
 import pygame
 from pygame.locals import *
-from pygame.color import THECOLORS
 
-import equation
 import board
 import gameController
 
