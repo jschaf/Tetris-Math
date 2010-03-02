@@ -18,11 +18,11 @@ def main():
     board_model = board.Board(640, 480, screen)
     controller = gameController.GameController(board_model)
 
-    running = True
+    controller.running = True
 
-    while running:
-        controller.update(board_model)
+    while controller.running:        
+        controller.update()
         controller.draw()
-
+            
 if __name__ == '__main__':
     main()
