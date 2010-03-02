@@ -6,6 +6,7 @@
 
 # import necessary modules
 import random
+from equation import int_from_digits
 
 class Board(object):
     '''A board to hold the game state.  Equations start at the top
@@ -25,10 +26,15 @@ class Board(object):
         self.drop_speed = 1
         self.problem_count = 0
         self.correct_tally = 0
+        self.current_input = []
 
     def increase_drop_speed(self):
         '''Increase the rate at which the equations fall.'''
         self.drop_speed += 1
+
+    def has_correct_guess(self):
+        guess = int_from_digits(self.current_input)
+        return self.current_eqn.answer == guess
 
     def update(self):
         '''Update the board state.'''
