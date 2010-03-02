@@ -31,11 +31,14 @@ class Equation(object):
         self.left_side = randint(0, 10)
         self.right_side = randint(0, 10)
         self.answer = self.eqn_function(self.left_side, self.right_side)
-
-    def render(self, with_answer=False):
+    
+   
+    def render(self, guess=None, with_answer=False):
         '''Return a string representation of the equation.'''
-        render_string = '{0} {1} {2}'.format(self.left_side, self.eqn_repr,
+        render_string = '{0} {1} {2} = '.format(self.left_side, self.eqn_repr,
                                              self.right_side)
-        if with_answer:
-            render_string += ' = {0}'.format(self.answer)
+        if guess:
+            render_string += str(guess)
+        elif with_answer:
+            render_string += str(self.answer)
         return render_string
