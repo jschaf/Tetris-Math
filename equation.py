@@ -4,6 +4,9 @@
 from random import choice, randint
 from operator import add, sub, mul, floordiv
 
+def int_from_digits(numList): 
+    return int(''.join(map(str, numList)))
+    
 class Equation(object):
     '''Represent an equation.
 
