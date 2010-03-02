@@ -3,16 +3,16 @@ from pygame.locals import *
 import pygame
 
 from equation import Equation
-import textView
-import guiView
+from text_view import TextView
+from gui_view import GuiView
 
 class GameController(object):
     '''Controller.'''
 
     def __init__(self, board):
         self.board = board
-        self.gui_view = guiView.GuiView(board)
-        self.text_view = textView.TextView(board)
+        self.gui_view = GuiView(board)
+        self.text_view = TextView(board)
         self.running = True
         initial_eqn = Equation(0)
         self.board.current_eqn = initial_eqn
