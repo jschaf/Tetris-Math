@@ -1,5 +1,11 @@
 '''A game board for equations.
 '''
+
+
+# Tetris Math prototype
+
+# import necessary modules
+import random
 from equation import int_from_digits
 
 class Board(object):
@@ -10,9 +16,8 @@ class Board(object):
     '''
     DEAD_EQN_HEIGHT = 10
 
-    def __init__(self, width, height, surface):
-        self.width = width
-        self.height = height
+    def __init__(self, window_size, surface):
+        self.width, self.height = window_size
         self.surface = surface
         self.dead_eqns = 0
         self.current_eqn = None

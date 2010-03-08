@@ -30,7 +30,10 @@ class Equation(object):
         # Should limit leftSide and rightSide to reasonable values for
         # different operators.  Also make sure division is even.
         self.left_side = randint(0, 10)
-        self.right_side = randint(0, 10)
+        if self.eqn_function == sub:
+            self.right_side = randint(0, self.left_side)
+        else:
+            self.right_side = randint(0, 10)
         self.answer = self.eqn_function(self.left_side, self.right_side)
     
    
