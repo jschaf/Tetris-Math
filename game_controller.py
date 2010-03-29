@@ -18,7 +18,7 @@ class GameController(object):
         self.gui_view = GuiView(self.board, self.screen)
         self.text_view = TextView(self.board)
         self.running = True
-        self.mode = "running"
+        self.mode = "welcome"
         initial_eqn = Equation(0)
         self.board.current_eqn = initial_eqn
         self.gui_view.update_eqn(initial_eqn)
@@ -58,6 +58,9 @@ class GameController(object):
             self.check_running_events()
         elif self.mode == "summary":
             self.check_summary_events()
+        elif self.mode == "welcome":
+            self.check_welcome_events()
+            
          
     def check_quit_events(self):
         if pygame.event.peek().type is QUIT:
@@ -69,6 +72,18 @@ class GameController(object):
                 # TODO: Use buttons "are you sure"
                 if event.key in [K_ESCAPE, K_q]:
                     self.running = False
+    
+    def check_welcome_events(self):
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self.running = False
+                elif event.key == K_1:
+                    print "Dynamic version not yet implemented"
+                elif event.key == K_2:
+                    print "Multiplayer not yet implented"
+                elif event.key == K_3:
+                    self.mode = "running"
                 
     def check_running_events(self):
         for event in pygame.event.get():
@@ -76,6 +91,7 @@ class GameController(object):
                 if event.key in [K_ESCAPE, K_q]:
                     self.end_game()
                 elif event.key in self.number_keys:
+                    print self.number_key_dict[event.key]
                     self.board.current_input.append(self.number_key_dict[event.key])
                     self.gui_view.refresh()
                 elif event.key == K_RETURN:
