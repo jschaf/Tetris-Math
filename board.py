@@ -22,7 +22,7 @@ class Board(object):
         self.dead_eqns = 0
         self.current_eqn = None
         self.current_eqn_position = 0
-        self.drop_speed = 1
+        self.drop_speed = 3
         self.problem_count = 0
         self.correct_tally = 0
         self.current_input = []
@@ -30,6 +30,7 @@ class Board(object):
     def increase_drop_speed(self):
         '''Increase the rate at which the equations fall.'''
         self.drop_speed += 1
+        
 
     def has_correct_guess(self):
         '''Return if the current_input matches the answer.'''
