@@ -6,7 +6,10 @@ from operator import add, sub, mul, floordiv
 
 def int_from_digits(nums):
     '''Given a list of ints, return the corresponding integer'''
-    return int(''.join([str(n) for n in nums]))
+    if not nums:
+        return None
+    else:
+        return int(''.join([str(n) for n in nums]))
     
 class Equation(object):
     '''Represent an equation.
@@ -41,7 +44,7 @@ class Equation(object):
         '''Return a string representation of the equation.'''
         render_string = '{0} {1} {2} = '.format(self.left_side, self.eqn_repr,
                                              self.right_side)
-        if guess != None:
+        if guess is not None:
             render_string += str(guess)
         elif with_answer:
             render_string += str(self.answer)
