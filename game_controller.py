@@ -23,8 +23,6 @@ class GameController(object):
         self.board.current_eqn = initial_eqn
         self.gui_view.update_eqn(initial_eqn)
         self.text_view.update_eqn(initial_eqn)
-        self.number_keys = [K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]
-        self.number_key_dict = dict(zip(self.number_keys, range(10)))
               
     def generate_equation(self):
         '''Create a new equation to pass to the models.'''
@@ -55,6 +53,7 @@ class GameController(object):
         
         self.check_quit_events()
         if self.mode == "running":
+            self.board.update()
             self.check_running_events()
         elif self.mode == "summary":
             self.check_summary_events()
@@ -63,22 +62,18 @@ class GameController(object):
             
          
     def check_quit_events(self):
-        if pygame.event.peek().type is QUIT:
-            self.running = False   
+        quit_keys = [K_ESCAPE, K_q]
+
+        if pygame.event.peek() in quit_keys:
+            self.end_game()
             
     def check_summary_events(self):
-        for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                # TODO: Use buttons "are you sure"
-                if event.key in [K_ESCAPE, K_q]:
-                    self.running = False
-    
+        pass
+
     def check_welcome_events(self):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    self.running = False
-                elif event.key == K_1:
+                if event.key == K_1:
                     print "Dynamic version not yet implemented"
                 elif event.key == K_2:
                     print "Multiplayer not yet implented"
@@ -88,24 +83,41 @@ class GameController(object):
     def check_running_events(self):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key in [K_ESCAPE, K_q]:
-                    self.end_game()
-                elif event.key in self.number_keys:
-                    print self.number_key_dict[event.key]
-                    self.board.current_input.append(self.number_key_dict[event.key])
-                    self.gui_view.refresh()
-                elif event.key == K_RETURN:
-                    #compare, display, feedback
-                    self._update_eqn()                    
-            elif event.type is MOUSEBUTTONDOWN:
-                new_equation = self.generate_equation()
-                
-                self.board.current_eqn = new_equation
-                self.gui_view.update_eqn(new_equation)
-                self.text_view.update_eqn(new_equation)
-                
-                self.board.problem_count += 1 
+                self._check_keydown(event)
 
+            elif event.type is MOUSEBUTTONDOWN:
+                self._check_mousedown(event)
+
+    def _check_keydown(self, event):
+        number_keys = [K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]
+
+        # Generate a mapping of key events to its corresponding
+        # number.
+        number_key_dict = dict(zip(number_keys, range(10)))
+
+        if event.key in number_keys:
+            print(number_key_dict[event.key])
+            self.board.current_input.append(number_key_dict[event.key])
+            self.gui_view.refresh()
+
+        elif event.key == K_RETURN:
+            #compare, display, feedback
+            self._update_eqn()                    
+
+        else:
+            # TODO: Have some sort of display to inform the user that
+            # we need a number
+            pass
+
+    def _check_mousedown(self, event):
+        new_equation = self.generate_equation()
+
+        self.board.current_eqn = new_equation
+        self.gui_view.update_eqn(new_equation)
+        self.text_view.update_eqn(new_equation)
+
+        self.board.problem_count += 1 
+        
     def draw(self):
         '''Draw every model.'''
         self.gui_view.draw(self.mode)
