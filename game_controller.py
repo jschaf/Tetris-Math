@@ -40,7 +40,6 @@ class GameController(object):
         else:
             print('incorrect: answer is ' + str(self.board.current_eqn.answer))
         self.board.current_input = []
-        self.gui_view.refresh()
         
     def end_game(self):
         self.gui_view.clear_screen()
@@ -91,17 +90,14 @@ class GameController(object):
     def _check_keydown(self, event):
         number_keys = [K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]
 
-        # Generate a mapping of key events to its corresponding
+        # Generate a mapping of key events to the corresponding
         # number.
         number_key_dict = dict(zip(number_keys, range(10)))
 
         if event.key in number_keys:
-            print(number_key_dict[event.key])
             self.board.current_input.append(number_key_dict[event.key])
-            self.gui_view.refresh()
 
         elif event.key == K_RETURN:
-            #compare, display, feedback
             self._update_eqn()                    
 
         else:
