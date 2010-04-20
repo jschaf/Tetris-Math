@@ -46,12 +46,12 @@ def drawProblem(ttt, board):
     global correctTally
 
     print str(a)+ " + " +str(b)+ " = "
-    ans = input()
-    if (a + b == ans):
-        print "Correct!"
-        correctTally += 1
-    else:
-        print "Incorrect: "+str(a)+" + "+str(b)+" = "+str(a+b)
+    # ans = input()
+    # if (a + b == ans):
+    #     print "Correct!"
+    #     correctTally += 1
+    # else:
+    #     print "Incorrect: "+str(a)+" + "+str(b)+" = "+str(a+b)
 
 # This function provides a loop and variables to keep displaying math problems.
 def doProblems(ttt, board):
