@@ -9,7 +9,7 @@ from equation import int_from_digits
 class GuiView(object):
     '''The primary gui view.'''
     
-    white = (250,250,250)
+    
     teal = (31,73,125)
 
     def __init__(self, board, screen):
@@ -20,7 +20,7 @@ class GuiView(object):
         # set up the background surface
         self.surface = pygame.Surface(self.screen.get_size())
         self.surface = self.surface.convert()
-                
+
     def update_eqn(self, new_eqn):
         self.equation = new_eqn
         
@@ -38,7 +38,7 @@ class GuiView(object):
         pygame.display.flip()
     
     def _draw_welcome(self):
-        welcome_msg = self.font.render("Welcome to Tetris Math", 1, (31,73,125), (250,250,250))
+        welcome_msg = self.font.render("Welcome to Tetris Math", 1, (31,73,125))
         instruction = self.font.render("Press a number from the options below:", 1, (31,73,125), (250,250,250))
         choice1 = self.font.render("1. Single Player", 1, (31,73,125), (250,250,250))
         choice2 = self.font.render("2. Multi Player", 1, (31,73,125), (250,250,250))
@@ -51,23 +51,33 @@ class GuiView(object):
         self.surface.blit(choice3, (130, 330))
 
     def _draw_running(self):
+        if self.board.mode == 'falling':
+            self._draw_falling()
+        elif self.board.mode == 'exploding':
+            self._draw_exploding()
+
+    def _draw_falling(self):
         if self.board.current_input:
             guess_num = int_from_digits(self.board.current_input)
             eqn_render = self.equation.render(guess=guess_num)
-            print(eqn_render)
         else:
             eqn_render = self.equation.render()
 
         # (text, smoothed(1=true), text RGB color)    
         text = self.font.render(eqn_render, 1, (31,73,125), (250,250,250))
 
-        # clear the board and copy the rendered message onto it
-
+        # TODO: Clear only the part of the screen that the equation
+        # occupied.
         self.surface.fill ((250, 250, 250))
         self.surface.blit(text, (30, self.board.current_eqn_position))
 
         text_rect = pygame.Rect(120, 190, 130, 40)
         border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
+
+
+    def _draw_exploding(self):
+        self.surface.fill(Color('red'))
+
 
     def _draw_summary(self):
         summary_string = 'You answered {0} of {1} problems correctly'
