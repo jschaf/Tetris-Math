@@ -47,8 +47,7 @@ class GameController(object):
         
 
     def update(self):
-        '''This function provides a loop and variables to keep
-        displaying math problems.'''
+        '''Perform the appropriate actions for each mode.'''
         
         self.check_quit_events()
         if self.mode == "running":
