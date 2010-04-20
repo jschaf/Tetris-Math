@@ -29,7 +29,7 @@ class Equation(object):
 
         self.eqn_function = choice(eqn_levels[difficulty])
         self.eqn_repr = eqn_represenations[self.eqn_function]
-
+        self.is_killed = False
         # Should limit leftSide and rightSide to reasonable values for
         # different operators.  Also make sure division is even.
         self.left_side = randint(0, 10)
@@ -43,7 +43,7 @@ class Equation(object):
     def render(self, guess=None, with_answer=False):
         '''Return a string representation of the equation.'''
         render_string = '{0} {1} {2} = '.format(self.left_side, self.eqn_repr,
-                                             self.right_side)
+                                                self.right_side)
         if guess is not None:
             render_string += str(guess)
         elif with_answer:
