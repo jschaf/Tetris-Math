@@ -26,6 +26,10 @@ class Board(object):
         self.problem_count = 0
         self.correct_tally = 0
         self.current_input = []
+        self.mode = "falling"
+        self.explode_animation_frame = 0
+        self.NUM_EXPLODE_FRAMES = 20
+        self.DEAD_EQN_HEIGHT = 0
 
     def increase_drop_speed(self):
         '''Increase the rate at which the equations fall.'''
@@ -39,16 +43,28 @@ class Board(object):
 
     def update(self):
         '''Update the board state.'''
-        self.current_eqn_position += self.drop_speed
-        if ((self.height - self.dead_eqns * self.DEAD_EQN_HEIGHT)
-            >= self.current_eqn_position):
-            self.dead_eqns += 1
-            self.kill_current_eqn()
+        if self.mode == 'exploding':
+            if self.explode_animation_frame > self.NUM_EXPLODE_FRAMES:
+                self.explode_animation_frame = 0
+                self.mode = 'falling'
+            else:
+                self.explode_animation_frame += 1
 
+        elif self.mode == 'falling':
+            self.current_eqn_position += self.drop_speed
+            if ((self.height - self.dead_eqns * self.DEAD_EQN_HEIGHT)
+                <= self.current_eqn_position):
+                
+                self.dead_eqns += 1
+                self.kill_current_eqn()
+        
+        else:
+            raise Attribute_Error
     def kill_current_eqn(self):
         '''If the equation reaches the bottom of the dead equations
         then blow it up.'''
-        pass
+        self.current_eqn.is_dead = True
+        self.mode = "exploding"
 
 
 
