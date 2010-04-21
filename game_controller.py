@@ -6,6 +6,8 @@ from equation import Equation
 from text_view import TextView
 from gui_view import GuiView
 from board import Board
+from pgu import gui
+import sys
 
 WINDOW_SIZE = (1024,768)
 
@@ -15,7 +17,8 @@ class GameController(object):
     def __init__(self, screen):
         self.screen = screen
         self.board = Board(WINDOW_SIZE, self.screen)
-        self.gui_view = GuiView(self.board, self.screen, self)
+        self.app = gui.App()
+        self.gui_view = GuiView(self.board, self.screen, self, self.app)
         self.text_view = TextView(self.board)
         self.running = True
         self.mode = "welcome"
@@ -23,6 +26,7 @@ class GameController(object):
         self.board.current_eqn = initial_eqn
         self.gui_view.update_eqn(initial_eqn)
         self.text_view.update_eqn(initial_eqn)
+        
               
     def generate_equation(self):
         '''Create a new equation to pass to the models.'''
@@ -82,6 +86,9 @@ class GameController(object):
                     print "Multiplayer not yet implented"
                 elif event.key == K_3:
                     self.mode = "running"
+            else:
+                sys.stdout.write(".")
+                self.app.event(event)
                 
     def check_running_events(self):
         for event in pygame.event.get():

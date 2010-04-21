@@ -13,7 +13,7 @@ class GuiView(object):
     
     teal = (31,73,125)
 
-    def __init__(self, board, screen, controller):
+    def __init__(self, board, screen, controller, app):
         self.font = pygame.font.Font(None, 36)
         self.equation = None
         self.board = board
@@ -22,6 +22,13 @@ class GuiView(object):
         # set up the background surface
         self.surface = pygame.Surface(self.screen.get_size())
         self.surface = self.surface.convert()
+        self.app = app
+        
+        '''only for welcome screen'''
+        starCtrl = StarControl(self.controller)
+        c = gui.Container(align=-1,valign=-1)
+        c.add(starCtrl,400,320)
+        self.app.init(c)
 
     def update_eqn(self, new_eqn):
         self.equation = new_eqn
@@ -56,17 +63,11 @@ class GuiView(object):
         self.surface.blit(choice3, (130, 330))
         '''
         
-        form = gui.Form()
+#        form = gui.Form()
+        
 
-        app = gui.App()
-        starCtrl = StarControl(self.controller)
-        
-        c = gui.Container(align=-1,valign=-1)
-        c.add(starCtrl,400,320)
-        
-        app.init(c)
         self.screen.fill((250,250,250))
-        app.paint(self.screen)        
+        self.app.paint(self.screen)        
         pygame.display.flip()   
         
 
