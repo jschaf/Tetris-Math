@@ -12,10 +12,10 @@ WINDOW_SIZE = (1024,768)
 class GameController(object):
     '''Controller.'''
 
-    def __init__(self):
-        self.screen = pygame.display.set_mode(WINDOW_SIZE, 0, 8)
+    def __init__(self, screen):
+        self.screen = screen
         self.board = Board(WINDOW_SIZE, self.screen)
-        self.gui_view = GuiView(self.board, self.screen)
+        self.gui_view = GuiView(self.board, self.screen, self)
         self.text_view = TextView(self.board)
         self.running = True
         self.mode = "welcome"
@@ -48,7 +48,8 @@ class GameController(object):
 
     def update(self):
         '''Perform the appropriate actions for each mode.'''
-        
+        if pygame.event.peek().type is QUIT:
+            self.running = False  
         self.check_quit_events()
         if self.mode == "running":
             self.board.update()
@@ -67,6 +68,10 @@ class GameController(object):
             
     def check_summary_events(self):
         pass
+    
+    def run(self):
+        print "running"
+        self.mode = "running"
 
     def check_welcome_events(self):
         for event in pygame.event.get():

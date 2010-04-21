@@ -2,16 +2,18 @@
 '''
 
 import pygame
+from pygame.locals import *
 from game_controller import GameController
 
 def main():
     
     pygame.init()
+    screen = pygame.display.set_mode ((1024, 768), SWSURFACE)
     pygame.display.set_caption('Tetris Math')
 
     clock = pygame.time.Clock()
     MAX_FPS = 40
-    controller = GameController()
+    controller = GameController(screen)
     
     controller.running = True
 
