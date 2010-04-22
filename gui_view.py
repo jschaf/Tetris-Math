@@ -25,9 +25,10 @@ class GuiView(object):
         self.app = app
         
         '''only for welcome screen'''
-        starCtrl = StarControl(self.controller)
+        # keyboard focus, focus manager
+        welcome_gui = WelcomeGui(self.controller)
         c = gui.Container(align=-1,valign=-1)
-        c.add(starCtrl,400,320)
+        c.add(welcome_gui,400,320)
         self.app.init(c)
 
     def update_eqn(self, new_eqn):
@@ -37,13 +38,17 @@ class GuiView(object):
         if mode == "welcome":
             self._draw_welcome()
 
-        elif mode == "running":        
-            self._draw_running()
+        elif mode == "single_player":        
+            self._draw_dynamic()
+        elif mode == "multi_player":
+            pass
+        elif mode == "quiz":
+            self._draw_static()
 
         elif mode == "summary":
             self._draw_summary()
 
-#        self.screen.blit (self.surface, (0, 0))
+        self.screen.blit (self.surface, (0, 0))
                 
         pygame.display.flip()
         
@@ -66,19 +71,11 @@ class GuiView(object):
 #        form = gui.Form()
         
 
-        self.screen.fill((250,250,250))
-        self.app.paint(self.screen)        
+        self.surface.fill((250,250,250))
+        self.app.paint(self.surface)        
         pygame.display.flip()   
         
-
-
-    def _draw_running(self):
-        if self.board.mode == 'falling':
-            self._draw_falling()
-        elif self.board.mode == 'exploding':
-            self._draw_exploding()
-
-    def _draw_falling(self):
+    def _draw_static(self):
         if self.board.current_input:
             guess_num = int_from_digits(self.board.current_input)
             eqn_render = self.equation.render(guess=guess_num)
@@ -92,7 +89,31 @@ class GuiView(object):
         # occupied.
         self.surface.fill ((250, 250, 250))
         self.surface.blit(text, (30, self.board.current_eqn_position))
+        
+        text_rect = pygame.Rect(120, 190, 130, 40)
+        border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
 
+    def _draw_dynamic(self):
+        if self.board.mode == 'falling':
+            self._draw_falling()
+        elif self.board.mode == 'exploding':
+            self._draw_exploding()
+
+    def _draw_falling(self):        
+        if self.board.current_input:
+            guess_num = int_from_digits(self.board.current_input)
+            eqn_render = self.equation.render(guess=guess_num)
+        else:
+            eqn_render = self.equation.render()
+
+        # (text, smoothed(1=true), text RGB color)    
+        text = self.font.render(eqn_render, 1, (31,73,125), (250,250,250))
+
+        # TODO: Clear only the part of the screen that the equation
+        # occupied.
+        self.surface.fill ((250, 250, 250))
+        self.surface.blit(text, (30, self.board.current_eqn_position))
+        
         text_rect = pygame.Rect(120, 190, 130, 40)
         border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
 
@@ -117,7 +138,7 @@ class GuiView(object):
         pygame.display.flip()
 
 
-class StarControl(gui.Table):
+class WelcomeGui(gui.Table):
     def __init__(self, controller, **params):
         gui.Table.__init__(self,**params)
 
@@ -148,7 +169,7 @@ class StarControl(gui.Table):
 
         self.tr()
         b = gui.Button("1. Single Player", width=150)
-        b.connect(gui.CLICK, single_player, b)
+        b.connect(gui.CLICK, controller.run_single_player, None)
         self.td(b)
 
         self.tr()
@@ -156,7 +177,7 @@ class StarControl(gui.Table):
         
         self.tr()
         b = gui.Button("1. Multi-Player", width=150)
-        b.connect(gui.CLICK, multi_player, b)
+        b.connect(gui.CLICK, controller.run_multi_player, None)
         self.td(b)
         
         self.tr()
@@ -164,24 +185,24 @@ class StarControl(gui.Table):
         
         self.tr()
         b = gui.Button("3. Practice Quiz", width=150)
-        b.connect(gui.CLICK, controller.run, b)
+        b.connect(gui.CLICK, controller.run_quiz, None)
         self.td(b)
         
-        self.tr()
-        self.td(gui.Label("Size: ",color=fg),align=1)
-        e = gui.HSlider(2,1,5,size=20,width=100,height=16,name='size')
-        self.td(e)
-        
-
-        
-        btn = gui.Switch(value=False,name='fullscreen')
-        btn.connect(gui.CHANGE, fullscreen_changed, btn)
-
-        self.tr()
-        self.td(gui.Label("Full Screen: ",color=fg),align=1)
-        self.td(btn)
-        
-        self.tr()
-        self.td(gui.Label("Warp Speed: ",color=fg),align=1)
-        self.td(gui.Switch(value=False,name='warp'))
+#        self.tr()
+#        self.td(gui.Label("Size: ",color=fg),align=1)
+#        e = gui.HSlider(2,1,5,size=20,width=100,height=16,name='size')
+#        self.td(e)
+#        
+#
+#        
+#        btn = gui.Switch(value=False,name='fullscreen')
+#        btn.connect(gui.CHANGE, fullscreen_changed, btn)
+#
+#        self.tr()
+#        self.td(gui.Label("Full Screen: ",color=fg),align=1)
+#        self.td(btn)
+#        
+#        self.tr()
+#        self.td(gui.Label("Warp Speed: ",color=fg),align=1)
+#        self.td(gui.Switch(value=False,name='warp'))
         

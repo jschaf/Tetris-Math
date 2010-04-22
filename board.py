@@ -26,7 +26,7 @@ class Board(object):
         self.problem_count = 0
         self.correct_tally = 0
         self.current_input = []
-        self.mode = "falling"
+        self.mode = "static"
         self.explode_animation_frame = 0
         self.NUM_EXPLODE_FRAMES = 20
         self.DEAD_EQN_HEIGHT = 0
@@ -57,6 +57,9 @@ class Board(object):
                 
                 self.dead_eqns += 1
                 self.kill_current_eqn()
+                
+        elif self.mode == 'static':
+            pass
         
         else:
             raise Attribute_Error

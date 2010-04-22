@@ -46,7 +46,7 @@ class GameController(object):
         self.board.current_input = []
         
     def end_game(self):
-        self.gui_view.clear_screen()
+#        self.gui_view.clear_screen()
         self.mode = "summary"
         
 
@@ -55,7 +55,14 @@ class GameController(object):
         if pygame.event.peek().type is QUIT:
             self.running = False  
         self.check_quit_events()
-        if self.mode == "running":
+        if self.mode == "single_player":
+            self.board.mode = "falling"
+            self.board.update()
+            self.check_running_events()
+        elif self.mode == "multi_player":
+            pass
+        elif self.mode == "quiz":
+            self.board.mode = "static"
             self.board.update()
             self.check_running_events()
         elif self.mode == "summary":
@@ -66,26 +73,24 @@ class GameController(object):
          
     def check_quit_events(self):
         quit_keys = [K_ESCAPE, K_q]
-
-        if pygame.event.peek() in quit_keys:
+        e = pygame.event.peek()
+        if e.type == KEYDOWN and e.key in quit_keys:
             self.end_game()
             
     def check_summary_events(self):
-        pass
+        self.check_quit_events()
     
-    def run(self):
-        print "running"
-        self.mode = "running"
+
 
     def check_welcome_events(self):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_1:
-                    print "Dynamic version not yet implemented"
+                    self.mode = "single_player"
                 elif event.key == K_2:
                     print "Multiplayer not yet implented"
                 elif event.key == K_3:
-                    self.mode = "running"
+                    self.mode = "quiz"
             else:
                 sys.stdout.write(".")
                 self.app.event(event)
@@ -123,8 +128,18 @@ class GameController(object):
         self.gui_view.update_eqn(new_equation)
         self.text_view.update_eqn(new_equation)
 
-        self.board.problem_count += 1 
+        self.board.problem_count += 1
         
+    ''' arg necessary for call from button click '''
+    def run_quiz(self, arg):
+        self.mode = "quiz"
+    
+    def run_single_player(self, arg):
+        self.mode = "single_player"
+         
+    def run_multi_player(self, arg):
+        print "multi-player not implemented yet"
+    
     def draw(self):
         '''Draw every model.'''
         self.gui_view.draw(self.mode)
