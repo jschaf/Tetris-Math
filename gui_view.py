@@ -23,6 +23,7 @@ class GuiView(object):
         self.surface = pygame.Surface(self.screen.get_size())
         self.surface = self.surface.convert()
         self.app = app
+        self.teal = (31,73,125)
         
         '''only for welcome screen'''
         # keyboard focus, focus manager
@@ -65,12 +66,9 @@ class GuiView(object):
         self.surface.blit(instruction, (130, 240))
         self.surface.blit(choice1, (130, 270))
         self.surface.blit(choice2, (130, 300))
-        self.surface.blit(choice3, (130, 330))
-        '''
+        self.surface.blit(choice3, (130, 330))        '''
         
 #        form = gui.Form()
-        
-
         self.surface.fill((250,250,250))
         self.app.paint(self.surface)        
         pygame.display.flip()   
@@ -81,14 +79,21 @@ class GuiView(object):
             eqn_render = self.equation.render(guess=guess_num)
         else:
             eqn_render = self.equation.render()
+            
+        correct_text= self.font.render("Correct", 1, self.teal)
+        incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
 
         # (text, smoothed(1=true), text RGB color)    
-        text = self.font.render(eqn_render, 1, (31,73,125), (250,250,250))
+        text = self.font.render(eqn_render, 1, self.teal)
 
         # TODO: Clear only the part of the screen that the equation
         # occupied.
         self.surface.fill ((250, 250, 250))
-        self.surface.blit(text, (30, self.board.current_eqn_position))
+        self.surface.blit(text, (130, 200))
+        if self.controller.display_correct:
+            self.surface.blit(correct_text, (130, 240))
+        elif self.controller.display_incorrect:
+            self.surface.blit(incorrect_text, (130, 240))    
         
         text_rect = pygame.Rect(120, 190, 130, 40)
         border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
