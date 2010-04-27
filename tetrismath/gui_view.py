@@ -31,9 +31,6 @@ class GuiView(object):
         c = gui.Container(align=-1,valign=-1)
         c.add(welcome_gui,400,320)
         self.app.init(c)
-
-    def update_eqn(self, new_eqn):
-        self.equation = new_eqn
         
     def draw(self, mode):
         if mode == "welcome":
