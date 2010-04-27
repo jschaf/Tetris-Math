@@ -12,7 +12,7 @@ def main():
     pygame.display.set_caption('Tetris Math')
 
     clock = pygame.time.Clock()
-    MAX_FPS = 40
+    MAX_FPS = 60
     controller = GameController(screen)
     
     controller.running = True

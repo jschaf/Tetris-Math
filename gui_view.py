@@ -15,7 +15,6 @@ class GuiView(object):
 
     def __init__(self, board, screen, controller, app):
         self.font = pygame.font.Font(None, 36)
-        self.equation = None
         self.board = board
         self.screen = screen
         self.controller = controller
@@ -24,6 +23,7 @@ class GuiView(object):
         self.surface = self.surface.convert()
         self.app = app
         self.teal = (31,73,125)
+        self.red = (218,31,40)
         
         '''only for welcome screen'''
         # keyboard focus, focus manager
@@ -32,8 +32,6 @@ class GuiView(object):
         c.add(welcome_gui,400,320)
         self.app.init(c)
 
-    def update_eqn(self, new_eqn):
-        self.equation = new_eqn
         
     def draw(self, mode):
         if mode == "welcome":
@@ -71,17 +69,15 @@ class GuiView(object):
 #        form = gui.Form()
         self.surface.fill((250,250,250))
         self.app.paint(self.surface)        
-        pygame.display.flip()   
+        pygame.display.flip() 
+          
         
     def _draw_static(self):
         if self.board.current_input:
             guess_num = int_from_digits(self.board.current_input)
-            eqn_render = self.equation.render(guess=guess_num)
+            eqn_render = self.board.current_eqn.render(guess=guess_num)
         else:
-            eqn_render = self.equation.render()
-            
-        correct_text= self.font.render("Correct", 1, self.teal)
-        incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
+            eqn_render = self.board.current_eqn.render() 
 
         # (text, smoothed(1=true), text RGB color)    
         text = self.font.render(eqn_render, 1, self.teal)
@@ -91,12 +87,14 @@ class GuiView(object):
         self.surface.fill ((250, 250, 250))
         self.surface.blit(text, (130, 200))
         if self.controller.display_correct:
+            correct_text= self.font.render("Correct", 1, self.teal)
             self.surface.blit(correct_text, (130, 240))
         elif self.controller.display_incorrect:
+            incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
             self.surface.blit(incorrect_text, (130, 240))    
         
-        text_rect = pygame.Rect(120, 190, 130, 40)
-        border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
+        text_rect = pygame.Rect(15, 180, 175, 60)
+        border = pygame.draw.rect(self.surface, self.red, text_rect, 1)
 
     def _draw_dynamic(self):
         if self.board.mode == 'falling':
@@ -104,23 +102,36 @@ class GuiView(object):
         elif self.board.mode == 'exploding':
             self._draw_exploding()
 
-    def _draw_falling(self):        
+    def _draw_falling(self):
+        self.surface.fill ((250, 250, 250))
+        
+        # The current equation:        
         if self.board.current_input:
             guess_num = int_from_digits(self.board.current_input)
-            eqn_render = self.equation.render(guess=guess_num)
+            eqn_render = self.board.current_eqn.render(guess=guess_num)
         else:
-            eqn_render = self.equation.render()
-
-        # (text, smoothed(1=true), text RGB color)    
-        text = self.font.render(eqn_render, 1, (31,73,125), (250,250,250))
-
-        # TODO: Clear only the part of the screen that the equation
-        # occupied.
-        self.surface.fill ((250, 250, 250))
+            eqn_render = self.board.current_eqn.render()
+            
+        text = self.font.render(eqn_render, 1, self.teal)
         self.surface.blit(text, (30, self.board.current_eqn_position))
+        text_rect = pygame.Rect(5, self.board.current_eqn_position-30, 175, 78)
+        pygame.draw.rect(self.surface, self.red, text_rect, 1)
         
-        text_rect = pygame.Rect(120, 190, 130, 40)
-        border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
+        if self.controller.display_incorrect:
+            incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
+            self.surface.blit(incorrect_text, (30, self.board.current_eqn_position+40))
+        
+        # The dead equations:
+        pos = 1
+        for eqn in self.board.dead_eqn_list:
+            eqn_string = eqn.render(with_answer=True)
+            eqn_img = self.font.render(eqn_string, 1, self.red)
+            img_pos = self.board.height - pos*self.board.DEAD_EQN_HEIGHT
+            self.surface.blit(eqn_img, (30, img_pos))
+            print pos*self.board.DEAD_EQN_HEIGHT
+            text_rect = pygame.Rect(5, img_pos-30, 175, 78)
+            pygame.draw.rect(self.surface, self.red, text_rect, 1)
+            pos+=1
 
 
     def _draw_exploding(self):
@@ -181,7 +192,7 @@ class WelcomeGui(gui.Table):
         self.td(gui.Label(""))
         
         self.tr()
-        b = gui.Button("1. Multi-Player", width=150)
+        b = gui.Button("2. Multi-Player", width=150)
         b.connect(gui.CLICK, controller.run_multi_player, None)
         self.td(b)
         
