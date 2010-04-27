@@ -26,7 +26,7 @@ class Equation(object):
         eqn_represenations = {add : '+', sub : '-', mul : '*', floordiv : '/',
                              pow : '^'}
 
-
+        self.xpos, self.ypos = (0,0)
         self.eqn_function = choice(eqn_levels[difficulty])
         self.eqn_repr = eqn_represenations[self.eqn_function]
         self.is_killed = False

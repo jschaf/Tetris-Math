@@ -18,10 +18,8 @@ class Board(object):
 
     def __init__(self, window_size, surface):
         self.width, self.height = window_size
-        self.surface = surface
-        self.dead_eqns = 0
+        self.dead_eqns = []
         self.current_eqn = None
-        self.current_eqn_position = 0
         self.drop_speed = 3
         self.problem_count = 0
         self.correct_tally = 0
@@ -45,17 +43,19 @@ class Board(object):
         '''Update the board state.'''
         if self.mode == 'exploding':
             if self.explode_animation_frame > self.NUM_EXPLODE_FRAMES:
+                print("changint to falling")
                 self.explode_animation_frame = 0
                 self.mode = 'falling'
+                self.current_eqn = Equation(0)
             else:
+                print("exploding")
                 self.explode_animation_frame += 1
 
         elif self.mode == 'falling':
-            self.current_eqn_position += self.drop_speed
-            if ((self.height - self.dead_eqns * self.DEAD_EQN_HEIGHT)
-                <= self.current_eqn_position):
+            self.current_eqn.ypos += self.drop_speed
+            if ((self.height - len(self.dead_eqns) * self.DEAD_EQN_HEIGHT)
+                <= self.current_eqn.ypos):
                 
-                self.dead_eqns += 1
                 self.kill_current_eqn()
                 
         elif self.mode == 'static':
@@ -67,6 +67,7 @@ class Board(object):
         '''If the equation reaches the bottom of the dead equations
         then blow it up.'''
         self.current_eqn.is_dead = True
+        self.dead_eqns.append(self.current_eqn)
         self.mode = "exploding"
 
 

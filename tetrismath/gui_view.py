@@ -117,7 +117,7 @@ class GuiView(object):
         # TODO: Clear only the part of the screen that the equation
         # occupied.
         self.surface.fill ((250, 250, 250))
-        self.surface.blit(text, (30, self.board.current_eqn_position))
+        self.surface.blit(text, (30, self.board.current_eqn.ypos))
         
         text_rect = pygame.Rect(120, 190, 130, 40)
         border = pygame.draw.rect(self.surface, Color('red'), text_rect, 1)
