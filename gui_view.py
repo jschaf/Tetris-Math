@@ -99,9 +99,9 @@ class SummaryGui(GuiView):
         super(SummaryGui, self).__init__(board, screen)
 
     def draw(self):
-        summary_string = 'You answered {0} of {1} problems correctly'
-        formatted_string = summary_string.format(self.board.correct_tally,
-                                                 self.board.problem_count)
+        summary_string = 'You answered %d of %d problems correctly'
+        formatted_string = summary_string % (self.board.correct_tally,
+                                             self.board.problem_count)
         text = self.font.render(formatted_string,
                                  1, (31, 73, 125), (250, 250, 250))
         self.surface.fill ((250, 250, 250))

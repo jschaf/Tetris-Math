@@ -42,8 +42,8 @@ class Equation(object):
    
     def render(self, guess=None, with_answer=False):
         '''Return a string representation of the equation.'''
-        render_string = '{0} {1} {2} = '.format(self.left_side, self.eqn_repr,
-                                                self.right_side)
+        render_string = '%d %s %d = ' % (self.left_side, self.eqn_repr,
+                                         self.right_side)
         if guess is not None:
             render_string += str(guess)
         elif with_answer:

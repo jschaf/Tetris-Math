@@ -15,7 +15,6 @@ class GameController(object):
         self.screen = screen
         self.board = DynamicBoard(WINDOW_SIZE)
         self.gui_view = WelcomeGui(self.screen, controller=self)
-        self.app = self.gui_view.app
         self.running = True
         self.mode = "welcome"
         self.quit_keys = [K_ESCAPE, K_q]
@@ -25,12 +24,12 @@ class GameController(object):
         self.board.problem_count += 1     
         return Equation(0)
         
+    def exit_program(self):
+        self.running = False
+
     def end_game(self):
-        if self.mode == "summary":
-            pygame.mixer.music.fadeout(1000)
-            self.running = False
-        else:
-            self.mode = "summary"
+        pygame.mixer.music.fadeout(1000)
+        self.change_mode('summary_mode')
         
     def update(self):
         '''Perform the appropriate actions for each mode.'''
@@ -56,7 +55,7 @@ class GameController(object):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in self.quit_keys:
-                    self.end_game()
+                    self.exit_program()
                 elif event.key == K_1:
                     self.run_single_player()
                 elif event.key == K_2:
@@ -65,7 +64,7 @@ class GameController(object):
                     self.run_quiz()
             else:
                 # pass events to PGU
-                self.app.event(event)
+                self.gui_view.app.event(event)
                 
     def _check_playing_events(self):
         number_keys = [K_0, K_1, K_2, K_3, K_4, K_5, K_6, K_7, K_8, K_9]

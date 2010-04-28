@@ -19,6 +19,7 @@ class Board(object):
         
     def has_correct_guess(self):
         '''Return if the current_input matches the answer.'''
+        raise NotImplementedError
         guess = int_from_digits(self.current_input)
         return self.current_eqn.answer == guess
 
