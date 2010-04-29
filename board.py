@@ -17,6 +17,8 @@ class Board(object):
         self.current_input = []
         self.correct_tally = 0
         self.eqn_xpos, self.eqn_ypos = (0,0)
+        self.display_correct = False
+        self.display_incorrect = False
         
     def next_eqn(self):
         self.current_eqn = Equation(0)
@@ -27,9 +29,11 @@ class Board(object):
         
     def has_correct_guess(self):
         '''Return if the current_input matches the answer.'''
-#        raise NotImplementedError
         guess = int_from_digits(self.current_input)
         return self.current_eqn.answer == guess
+
+    def check_ans(self):
+        pass
 
     def update(self):
         '''Update the board state.'''
@@ -38,9 +42,21 @@ class Board(object):
 class StaticBoard(Board):
     def __init__(self, window_size):
         super(StaticBoard, self).__init__(window_size)
-        self.display_correct = False
-        self.display_incorrect = False
         self.eqn_xpos, self.eqn_ypos = (130, 200)
+        
+    def check_ans(self):
+        if self.display_correct or self.board.display_incorrect:
+            if self.problem_count == 10:
+                self.mode = "game_over"
+            else:    
+                self.next_eqn()
+        else:
+            if self.has_correct_guess():
+                self.display_correct = True
+                self.correct_tally += 1
+           
+            else:
+                self.display_incorrect = True
 
     def update(self):
         pass
@@ -65,12 +81,21 @@ class DynamicBoard(Board):
         then blow it up.'''
 #        self.current_eqn.is_dead = True
         self.dead_eqns.append(self.current_eqn)
+        self.kill_height = (len(self.dead_eqns)+1) * self.DEAD_EQN_HEIGHT
 #        self.problem_count += 1
 #        self.mode = "exploding"
 
     def increase_drop_speed(self):
         '''Increase the rate at which the equations fall.'''
         self.drop_speed += 1
+        
+    def check_ans(self):
+        if self.has_correct_guess():
+            self.correct_tally += 1            
+        else:
+            self.kill_current_eqn()
+            
+        self.next_eqn()
 
     def update(self):
         '''Update the board state.'''
@@ -86,8 +111,7 @@ class DynamicBoard(Board):
             self.eqn_ypos += self.drop_speed
             
             if ((self.height - self.kill_height) <= self.eqn_ypos):
-                self.kill_current_eqn()
-                self.kill_height = (len(self.dead_eqns)+1) * self.DEAD_EQN_HEIGHT
+                self.kill_current_eqn()                
                 
                 if self.kill_height >= self.height:
                     self.mode = "game_over"

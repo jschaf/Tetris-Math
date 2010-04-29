@@ -11,7 +11,7 @@ class GuiView(object):
     '''The primary gui view.'''
     
     def __init__(self, board, screen):
-        self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 52)
         self.board = board
         self.screen = screen
         self.surface = pygame.Surface(screen.get_size())
