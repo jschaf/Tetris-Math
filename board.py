@@ -13,13 +13,21 @@ class Board(object):
         self.width, self.height = window_size
         self.dead_eqns = []
         self.current_eqn = Equation(0)
-        self.problem_count = 0
+        self.problem_count = 1
         self.current_input = []
         self.correct_tally = 0
+        self.eqn_xpos, self.eqn_ypos = (0,0)
+        
+    def next_eqn(self):
+        self.current_eqn = Equation(0)
+        self.problem_count += 1
+        self.current_input = []
+        self.display_correct = False
+        self.display_incorrect = False
         
     def has_correct_guess(self):
         '''Return if the current_input matches the answer.'''
-        raise NotImplementedError
+#        raise NotImplementedError
         guess = int_from_digits(self.current_input)
         return self.current_eqn.answer == guess
 
@@ -30,6 +38,9 @@ class Board(object):
 class StaticBoard(Board):
     def __init__(self, window_size):
         super(StaticBoard, self).__init__(window_size)
+        self.display_correct = False
+        self.display_incorrect = False
+        self.eqn_xpos, self.eqn_ypos = (130, 200)
 
     def update(self):
         pass
@@ -40,16 +51,22 @@ class DynamicBoard(Board):
         self.drop_speed = 3
         self.explode_animation_frame = 0
         self.NUM_EXPLODE_FRAMES = 20
-        self.DEAD_EQN_HEIGHT = 10
+        self.DEAD_EQN_HEIGHT = 80
+        self.kill_height = 80
+        self.eqn_xpos, self.eqn_ypos = (130, 0)
         self.mode = "falling"
+        
+    def next_eqn(self):
+        super(DynamicBoard, self).next_eqn()
+        self.eqn_ypos = 0
 
     def kill_current_eqn(self):
         '''If the equation reaches the bottom of the dead equations
         then blow it up.'''
-        self.current_eqn.is_dead = True
+#        self.current_eqn.is_dead = True
         self.dead_eqns.append(self.current_eqn)
-        self.problem_count += 1
-        self.mode = "exploding"
+#        self.problem_count += 1
+#        self.mode = "exploding"
 
     def increase_drop_speed(self):
         '''Increase the rate at which the equations fall.'''
@@ -66,16 +83,14 @@ class DynamicBoard(Board):
                 self.explode_animation_frame += 1
 
         elif self.mode == 'falling':
-            self.current_eqn.ypos += self.drop_speed
-
-            dead_eqns_height = len(self.dead_eqns) * self.DEAD_EQN_HEIGHT
-
-            if dead_eqns_height >= self.height:
-                self.mode = 'game_over'
-        
-
-            if (self.height - dead_eqns_height) <= self.current_eqn.ypos:
+            self.eqn_ypos += self.drop_speed
+            
+            if ((self.height - self.kill_height) <= self.eqn_ypos):
                 self.kill_current_eqn()
+                self.kill_height = (len(self.dead_eqns)+1) * self.DEAD_EQN_HEIGHT
+                
+                if self.kill_height >= self.height:
+                    self.mode = "game_over"
+                else:
+                    self.next_eqn()
 
-        else:
-           raise Attribute_Error

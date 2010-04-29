@@ -19,14 +19,14 @@ def main():
     MAX_FPS = 80
     controller = GameController(screen)
 
-    try:
-        while controller.running:
-                controller.update()
-                controller.draw()
-                clock.tick(MAX_FPS)
-    except:
-        traceback.print_exc(file=(open(LOG_FILENAME, "a")))
-    finally:
-        exit(1)
+#    try:
+    while controller.running:
+            controller.update()
+            controller.draw()
+            clock.tick(MAX_FPS)
+#    except:
+#        traceback.print_exc(file=(open(LOG_FILENAME, "a")))
+#    finally:
+#        exit(1)
 if __name__ == '__main__':
     main()

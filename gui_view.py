@@ -16,10 +16,11 @@ class GuiView(object):
         self.screen = screen
         self.surface = pygame.Surface(screen.get_size())
         self.surface = self.surface.convert()
+        self.message = None
         self.teal = (31, 73, 125)
         self.red = (218, 31, 40)
 
-    def _draw_current_eqn(self, position):
+    def _draw_current_eqn(self):
         if self.board.current_input:
             guess_num = int_from_digits(self.board.current_input)
             eqn_render = self.board.current_eqn.render(guess=guess_num)
@@ -27,8 +28,8 @@ class GuiView(object):
             eqn_render = self.board.current_eqn.render()
 
         text = self.font.render(eqn_render, 1, self.teal)
-        self.surface.blit(text, position)
-        text_rect = pygame.Rect(5, self.board.current_eqn.ypos - 30, 175, 78)
+        self.surface.blit(text, (self.board.eqn_xpos, self.board.eqn_ypos))
+        text_rect = pygame.Rect(self.board.eqn_xpos - 25, self.board.eqn_ypos - 30, 175, 78)
         pygame.draw.rect(self.surface, self.red, text_rect, 1)
         
     def draw(self, mode):
@@ -44,19 +45,22 @@ class StaticGui(GuiView):
         # occupied.
         self.surface.fill ((250, 250, 250))
 
-        self._draw_current_eqn(position=(130, 200))
+        self._draw_current_eqn()
+        prob_num = self.font.render(str(self.board.problem_count) + ".", 1, self.teal)
+        self.surface.blit(prob_num, (self.board.eqn_xpos - 62, self.board.eqn_ypos))
 
-#        if self.controller.display_correct:
-#            correct_text = self.font.render("Correct", 1, self.teal)
-#            self.surface.blit(correct_text, (130, 240))
-#
-#        elif self.controller.display_incorrect:
-#            incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
-#            self.surface.blit(incorrect_text, (130, 240))    
+        if self.board.display_correct:
+            correct_text = self.font.render("Correct", 1, self.teal)
+            self.surface.blit(correct_text, (130, 250))
+
+        elif self.board.display_incorrect:
+            incorrect_text = self.font.render("Incorrect. Answer is " + str(self.board.current_eqn.answer), 1, self.teal)
+            self.surface.blit(incorrect_text, (130, 250))
         
-        text_rect = pygame.Rect(15, 180, 175, 60)
-        border = pygame.draw.rect(self.surface, self.red, text_rect, 1)
-
+        elif self.message:
+            message_text = self.font.render(self.message, 1, self.teal)
+            self.surface.blit(message_text, (130, 250))    
+    
         self.screen.blit (self.surface, (0, 0))
         pygame.display.flip()
 
@@ -77,18 +81,18 @@ class DynamicGui(GuiView):
         # occupied.
         self.surface.fill ((250, 250, 250))
         
-        self._draw_current_eqn(position=(30, self.board.current_eqn.ypos))
+        self._draw_current_eqn()
         self._draw_dead_eqns()
 
     def _draw_dead_eqns(self):
         for i, eqn in enumerate(self.board.dead_eqns):
             eqn_string = eqn.render(with_answer=True)
             eqn_img = self.font.render(eqn_string, 1, self.red)
-            img_pos = self.board.height - i * 30
-            self.surface.blit(eqn_img, (30, img_pos))
+            img_pos = self.board.height - (i+1) * self.board.DEAD_EQN_HEIGHT
+            self.surface.blit(eqn_img, (self.board.eqn_xpos, img_pos))
 
             # draw border
-            text_rect = pygame.Rect(5, img_pos - 30, 175, 78)
+            text_rect = pygame.Rect(self.board.eqn_xpos - 25, img_pos - 30, 175, 78)
             pygame.draw.rect(self.surface, self.red, text_rect, 1)
 
     def _draw_exploding(self):
