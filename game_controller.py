@@ -4,7 +4,7 @@ import pygame
 
 from pgu import gui
 
-from gui_view import WelcomeGui, StaticGui, DynamicGui, SummaryGui, MessageGui
+from gui_view import *
 from board import DynamicBoard, StaticBoard
 from equation import Equation
 WINDOW_SIZE = (1024, 768)
@@ -29,7 +29,13 @@ class GameController(object):
 
     def end_game(self):
         pygame.mixer.music.fadeout(1000)
-        self.change_mode('summary_mode')
+        self.gui_view.end_game()
+        
+    def lose_game(self):
+        self.change_mode('lose_mode')
+        
+    def win_game(self):
+        self.change_mode('win_mode')
         
     def new_level(self):
         self.board.next_level()
@@ -38,32 +44,75 @@ class GameController(object):
         
     def update(self):
         '''Perform the appropriate actions for each mode.'''
-        if pygame.event.peek().type is QUIT:
+        if pygame.event.peek(QUIT):
             self.exit_program()
         else:    
-            if self.mode == "playing":
+            if self.mode == "single_player" or self.mode == 'quiz':
                 self._check_playing_events()
-                self.board.update()
+                self.board.update()               
             elif self.mode == "summary":
                 self._check_summary_events()
             elif self.mode == 'message':
                 self._check_message_events()
+            elif self.mode == "pause":
+                self._check_pause_events()
+            elif self.mode == 'settings':
+                self._check_settings_events()
+            elif self.mode == "lose":
+                self._check_lose_events()
+            elif self.mode == "win":
+                self._check_win_events()
+            elif self.mode == "scores":
+                self._check_scores_events()
             elif self.mode == "welcome":
                 self._check_welcome_events()
+            elif self.mode == 'multi_player':
+                self._check_multi_player_events()
+            elif self.mode == 'instructions':
+                self._check_instructions_events()
          
     def _check_summary_events(self):
         for e in pygame.event.get():
             if e.type == KEYDOWN:
-                if e.key in self.quit_keys:
-                    self.exit_program()
-                elif e.key == K_RETURN:
+#                if e.key == K_RETURN:
+#                    self.change_mode('welcome_mode')
+#                    return
+                if e.key == K_1:
+                    self.change_mode('quiz_mode')
+                    return
+                elif e.key == K_2:
                     self.change_mode('welcome_mode')
+                    return
+                elif e.key == K_3:
+                    self.exit_program()
+                    return
+                elif e.key in self.quit_keys:
+                    self.exit_program()
+                    return
+
+            if self.gui_view.app:
+                self.gui_view.app.event(e)
                     
     def _check_message_events(self):
         for e in pygame.event.get():
             if e.type == KEYDOWN:
                 if e.key == K_RETURN:
                     self.return_to_mode('single_player_mode')
+                    return
+
+            if self.gui_view.app:
+                self.gui_view.app.event(e)
+                
+    def _check_instructions_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN:
+                    self.change_mode('single_player_mode')
+                elif e.key in self.quit_keys:
+                    self.change_mode('welcome_mode')
+
+            if self.gui_view.app:
+                self.gui_view.app.event(e)
 
     def _check_welcome_events(self):
         for event in pygame.event.get():
@@ -71,14 +120,104 @@ class GameController(object):
                 if event.key in self.quit_keys:
                     self.exit_program()
                 elif event.key == K_1:
-                    self.change_mode('single_player_mode')
+                    self.change_mode('instructions_mode')
                 elif event.key == K_2:
                     self.change_mode('multi_player_mode')
                 elif event.key == K_3:
                     self.change_mode('quiz_mode')
-            else:
+                elif event.key == K_4:
+                    self.change_mode('high_scores_mode')
+                elif event.key == K_s:
+                    self.change_mode('settings_mode')
+#            else:
                 # pass events to PGU
+            if self.gui_view.app:
                 self.gui_view.app.event(event)
+                
+    def _check_pause_events(self):
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key in self.quit_keys:
+                    self.end_game()
+                    return
+                elif event.key == K_SPACE:
+                    self.return_to_mode('single_player_mode')
+                    return
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(event)
+                
+    def _check_lose_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+#                if e.key == K_RETURN:
+#                    self.change_mode('welcome_mode')
+#                    return
+                if e.key == K_1:
+                    self.change_mode('single_player_mode')
+                    return
+                elif e.key == K_2:
+                    self.change_mode('welcome_mode')
+                    return
+                elif e.key == K_3:
+                    self.exit_program()
+                    return
+                elif e.key in self.quit_keys:
+                    self.exit_program()
+                    return
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(e)
+
+    def _check_win_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+#                if e.key == K_RETURN:
+#                    self.change_mode('welcome_mode')
+#                    return
+                if e.key == K_1:
+                    self.change_mode('single_player_mode')
+                    return
+                elif e.key == K_2:
+                    self.change_mode('welcome_mode')
+                    return
+                elif e.key == K_3:
+                    self.exit_program()
+                    return
+                elif e.key in self.quit_keys:
+                    self.exit_program()
+                    return
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(e)
+
+    def _check_scores_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN or e.key in self.quit_keys:
+                    self.change_mode('welcome_mode')
+                    return
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(e)   
+                
+    def _check_settings_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN or e.key in self.quit_keys:
+                    self.change_mode('welcome_mode')
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(e)
+                
+    def _check_multi_player_events(self):
+        for e in pygame.event.get():
+            if e.type == KEYDOWN:
+                if e.key == K_RETURN or e.key in self.quit_keys:
+                    self.change_mode('welcome_mode')
+            
+            if self.gui_view.app:
+                    self.gui_view.app.event(e)
                 
 
     def _check_playing_events(self):
@@ -87,9 +226,12 @@ class GameController(object):
         input_length = len(self.board.current_input)
         
         if self.board.mode == "game_over":
-            self.end_game()        
+            self.end_game()
+        elif self.board.mode == "lose":
+            self.lose_game()
+        elif self.board.mode == "win":
+            self.win_game()        
         elif self.board.mode == "level_break":
-            print self.board.mode
             self.new_level()
         
         else:
@@ -99,10 +241,8 @@ class GameController(object):
                     self.gui_view.message = None
                     # Only take user input if not displaying a message
                     if event.key in self.quit_keys:
-                        self.change_mode('summary_mode')
-                        
+                        self.end_game()
                     elif event.key == K_RETURN and input_length > 0:
-                        print 1
                         self.board.check_ans()
                         
                     elif not (self.board.display_correct or self.board.display_incorrect):
@@ -112,6 +252,9 @@ class GameController(object):
                         
                         elif event.key == K_BACKSPACE and input_length > 0:
                             self.board.current_input.pop()
+                            
+                        elif event.key == K_SPACE and self.mode == 'single_player':
+                            self.change_mode('pause_mode')
                         # Won't display the message with backspace or extra digits                                                
                         elif event.key != K_BACKSPACE and input_length < 3:
                             self.gui_view.message = "Must input a number" 
@@ -120,18 +263,23 @@ class GameController(object):
     def change_mode(self, new_mode):
         if new_mode == 'single_player_mode':
             self.board = DynamicBoard(WINDOW_SIZE)
-            self.gui_view = DynamicGui(self.board, self.screen)
+            self.gui_view = DynamicGui(self.board, self.screen, controller = self)
             pygame.mixer.music.load('alejandro.ogg')
             pygame.mixer.music.play(-1)
-            self.mode = "playing"
+            self.mode = "single_player"
 
         elif new_mode == 'multi_player_mode':
-            print("Multi-player not implemented yet")
+            self.gui_view = MultiplayerGui(self.screen, controller = self)
+            self.mode = 'multi_player'
 
         elif new_mode == 'quiz_mode':
             self.board = StaticBoard(WINDOW_SIZE)
-            self.gui_view = StaticGui(self.board, self.screen)
-            self.mode = "playing"
+            self.gui_view = StaticGui(self.board, self.screen, controller = self)
+            self.mode = "quiz"
+            
+        elif new_mode == 'instructions_mode':
+            self.gui_view = InstructionsGui(self.board, self.screen, controller = self)
+            self.mode = 'instructions'
             
         elif new_mode == 'summary_mode':
             self.gui_view = SummaryGui(self.board, self.screen, controller = self)
@@ -143,15 +291,36 @@ class GameController(object):
             
         elif new_mode == 'welcome_mode':
             self.gui_view = WelcomeGui(self.screen, controller = self)
-            self.mode = 'welcome'    
+            self.mode = 'welcome'
+
+        elif new_mode == 'high_scores_mode':
+            self.gui_view = HighScoresGui(self.board, self.screen, controller = self)
+            self.mode = 'scores'
             
-        else:
-            raise AttributeError
+        elif new_mode == 'pause_mode':
+#            pygame.mixer.music.fadeout(1000)
+            self.gui_view = PauseGui(self.screen, controller = self)
+            self.mode = 'pause'
+            
+        elif new_mode == 'lose_mode':
+            self.gui_view = LoseGui(self.board, self.screen, controller = self)
+            self.mode = 'lose'
+            
+        elif new_mode == 'win_mode':
+            self.gui_view = WinGui(self.board, self.screen, controller = self)
+            self.mode = 'win'
+            
+        elif new_mode == 'settings_mode':
+            self.gui_view = SettingsGui(self.screen, controller = self)
+            self.mode = 'settings'    
+            
+#        else:
+#            raise AttributeError
 
     def return_to_mode(self, mode):
         if mode == 'single_player_mode':
-            self.gui_view = DynamicGui(self.board, self.screen)
-            self.mode = "playing"
+            self.gui_view = DynamicGui(self.board, self.screen, controller = self)
+            self.mode = "single_player"
             
     
     def draw(self):
